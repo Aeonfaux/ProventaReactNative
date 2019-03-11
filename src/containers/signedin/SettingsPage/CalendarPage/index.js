@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { View, Text, Switch } from "react-native";
+import { View, Text, Switch, AsyncStorage } from "react-native";
 // import RNCalendarEvents from "react-native-calendar-events";
 import { Header, Card, ListItem, TabbedMenu } from "../../../../components";
 import PageStyle from "./styles";
@@ -21,88 +21,33 @@ class CalendarPage extends Component {
         toggleStatus: null
       }
     ],
-    meetings: [
-      {
-        id: 0,
-        time: {
-          startingHour: "7",
-          startingMinute: "00",
-          meridian: "am",
-          endingHour: "8",
-          endingMinute: "00"
-        },
-        startDate: new Date("03/16/2019 08:30:00"),
-        endDate: new Date("03/16/2019 12:30:00"),
-        title: "Pearl Pay Discussion",
-        floorplan: {
-          location: "Grand Ballroom"
-          // image: require("../../../assets/floor_map.png")
-        },
-        events: []
-      },
-      {
-        id: 1,
-        time: {
-          startingHour: "7",
-          startingMinute: "00",
-          meridian: "am",
-          endingHour: "8",
-          endingMinute: "00"
-        },
-        startDate: new Date("03/17/2019 10:30:00"),
-        endDate: new Date("03/17/2019 14:00:00"),
-        title: "Skylabs Introduction",
-        floorplan: {
-          location: "Concert Hall"
-          // image: require("../../../assets/floor_map.png")
-        },
-        events: []
-      },
-      {
-        id: 2,
-        time: {
-          startingHour: "7",
-          startingMinute: "00",
-          meridian: "am",
-          endingHour: "8",
-          endingMinute: "00"
-        },
-        startDate: new Date("03/14/2019 8:30:00"),
-        endDate: new Date("03/14/2019 11:00:00"),
-        title: "Skylabs Introduction",
-        floorplan: {
-          location: "Concert Hall"
-          // image: require("../../../assets/floor_map.png")
-        },
-        events: []
-      }
-    ],
     syncPhone: "",
-    hasCalendarPermission: null
+    hasCalendarPermission: null,
+    token: ""
   };
 
-  resolvePromises(promise, meetingItems, i) {
-    return promise
-      .then(function () {
-        return new Promise(function (r) {
-          return setTimeout(r, 300);
+
+  async componentWillMount() {
+    try {
+      const { navigation } = this.props;
+      const token = await AsyncStorage.getItem('token');
+      if (token !== null) {
+        console.log('dshdjshjds', token)
+        this.props.fetchCalendarSettings(token).then(() => {
+          this.loadInitialData();
         });
-      })
-      .then(function () {
-        RNCalendarEvents.saveEvent(meetingItems[i].title, {
-          location: meetingItems[i].floorplan.location,
-          startDate: meetingItems[i].startDate.toISOString(),
-          endDate: meetingItems[i].endDate.toISOString()
-        });
-      });
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
   }
 
-  componentDidMount() {
-    const { token } = this.props;
-    this.props.fetchCalendarSettings(token).then(() => {
-      this.loadInitialData();
-    });
-  }
+  // componentDidMount() {
+  //   const { token } = this.props;
+  //   this.props.fetchCalendarSettings(token).then(() => {
+  //     this.loadInitialData();
+  //   });
+  // }
 
 
   loadInitialData() {
@@ -125,22 +70,20 @@ class CalendarPage extends Component {
       this.setState({
         options
       }, () => {
-        const options = [...this.state.calendarItems];
         const data = {
           "calendarGoogle": this.state.calendarItems[0].toggleStatus,
         };
-        this.props.updateCalendarSettings(data, token, "google")
+        this.props.updateCalendarSettings(data, this.state.token, "google")
       });
     } else if (i === 1) {
       options[i].toggleStatus = !options[i].toggleStatus;
       this.setState({
         options
       }, () => {
-        const options = [...this.state.calendarItems];
         const data = {
           "calendarIcalendar": this.state.calendarItems[1].toggleStatus
         };
-        this.props.updateCalendarSettings(data, token, "calendar")
+        this.props.updateCalendarSettings(data, this.state.token, "calendar")
       });
     }
 

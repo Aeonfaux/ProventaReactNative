@@ -38,7 +38,7 @@ export const fetchCalendarSettings = (token, callback) => async dispatch => {
 
 
 //Update calendar settings
-export const updateCalendarSettings = (data, token, type) => async dispatch => {
+export const updateCalendarSettings = (data, token, category) => async dispatch => {
   try {
     const request = await axios.patch(
       `${SERVER_ADDRESS}/settings`,
@@ -48,7 +48,7 @@ export const updateCalendarSettings = (data, token, type) => async dispatch => {
     dispatch({
       type: SETTINGS_CONFIG_SUCCESS,
       payload: {
-        type,
+        category,
         result: request.data.data.attributes
       }
     });

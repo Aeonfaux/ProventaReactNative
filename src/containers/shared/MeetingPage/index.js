@@ -16,7 +16,8 @@ import {
   fetchMainMeeting,
   fetchMainVenue,
   fetchExpectations,
-  fetchFacilitators
+  fetchFacilitators,
+  updateStatus
 } from "../../../actions";
 
 class MeetingPage extends Component {
@@ -26,20 +27,40 @@ class MeetingPage extends Component {
     selectedIndex: 1
   };
 
-  componentDidMount() {
-    const { navigation, status, token } = this.props;
-    const id = navigation.getParam("meetingId");
-    if (status === "loggedin") {
-      this.props.fetchMainMeeting(35, status, token);
-      this.props.fetchMainVenue(35, status, token);
-      this.props.fetchExpectations(35, status, token);
-      this.props.fetchFacilitators(35, status, token);
-    } else {
-      this.props.fetchMainMeeting(id, "loggedout", null);
-      this.props.fetchMainVenue(id, "loggedout", null);
-      this.props.fetchExpectations(id, "loggedout", null);
-      this.props.fetchFacilitators(id, "loggedout", null);
+  async componentWillMount() {
+    try {
+      const { navigation, status } = this.props;
+      const token = await AsyncStorage.getItem('token');
+      // console.log
+      // if (token !== null) {
+      //   this.props.fetchProfile(token).then(() => {
+      //     const activeUser = this.props.profile.id;
+      //     console.log('activeUser', activeUser);
+      //   })
+      // }
+
+      const id = navigation.getParam("meetingId");
+      if (status === "loggedin") {
+        this.props.fetchMainMeeting(35, status, token);
+        this.props.fetchMainVenue(35, status, token);
+        this.props.fetchExpectations(35, status, token);
+        this.props.fetchFacilitators(35, status, token);
+      } else {
+        this.props.fetchMainMeeting(id, "loggedout", null);
+        this.props.fetchMainVenue(id, "loggedout", null);
+        this.props.fetchExpectations(id, "loggedout", null);
+        this.props.fetchFacilitators(id, "loggedout", null);
+      }
+
+
+    } catch (error) {
+      // Error retrieving data
     }
+  }
+
+
+  componentDidMount() {
+
   }
 
 
@@ -278,5 +299,7 @@ const mapStatetoProps = ({ meeting, auth }) => {
 };
 export default connect(
   mapStatetoProps,
-  { fetchMainMeeting, fetchMainVenue, fetchExpectations, fetchFacilitators }
+  {
+    fetchMainMeeting, fetchMainVenue, fetchExpectations, fetchFacilitators, updateStatus
+  }
 )(MeetingPage);

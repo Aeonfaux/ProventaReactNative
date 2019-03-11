@@ -18,6 +18,7 @@ const INITIAL_STATE = {
 };
 
 export default function (state = INITIAL_STATE, action) {
+  console.log(action.payload)
   switch (action.type) {
     case SETTINGS_UPDATE:
       return { ...state, [action.payload.prop]: action.payload };
@@ -26,7 +27,7 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         calendar: {
           calendarGoogle: action.payload.calendarGoogle,
-          calendarIcalendar: action.payload.calendarIcalendar
+          calendarIcalendar: action.payload.calendarIcalendar,
         }
       };
     case FETCH_NOTIFICATION_SETTINGS:
@@ -42,11 +43,11 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         calendar: {
-          calendarGoogle: action.payload.type === 'google' ? action.payload.result.calendarGoogle : null,
-          calendarIcalendar: action.payload.type === 'calendar' ? action.payload.result.calendarIcalendar : null,
-          notificationPush: action.payload.type === 'push' ? action.payload.result.notificationPush : null,
-          notificationSms: action.payload.type === 'sms' ? action.payload.result.notificationSms : null,
-          notificationsEmail: action.payload.type === 'email' ? action.payload.result.notificationsEmail : null
+          calendarGoogle: action.payload.category === 'google' ? action.payload.calendarGoogle : null,
+          calendarIcalendar: action.payload.category === 'calendar' ? action.payload.calendarIcalendar : null,
+          notificationPush: action.payload.category === 'push' ? action.payload.notificationPush : null,
+          notificationSms: action.payload.category === 'sms' ? action.payload.notificationSms : null,
+          notificationsEmail: action.payload.category === 'email' ? action.payload.notificationsEmail : null
         }
       };
     case SETTINGS_CONFIG_FAIL:

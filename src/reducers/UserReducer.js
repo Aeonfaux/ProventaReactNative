@@ -25,7 +25,13 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         profile: {
-
+          firstName: action.payload.firstName,
+          lastName: action.payload.lastName,
+          position: action.payload.position,
+          company: action.payload.company,
+          contactNumber: action.payload.contactNumber,
+          linkedin: action.payload.linkedin,
+          email: action.payload.email
         }
       };
     case PROFILE_UPDATE_SUCCESS:

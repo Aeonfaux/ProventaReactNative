@@ -8,6 +8,8 @@ import {
   ;
 import axios from "axios";
 
+axios.defaults.headers.post['Access-Control-Allow-Methods'] = 'PATCH, DELETE, POST, GET, OPTIONS';
+
 //Update emailAddress and password field
 export const updateUser = ({ prop, value }) => {
   return {
@@ -18,13 +20,18 @@ export const updateUser = ({ prop, value }) => {
 
 //Retrieve user profile
 export const fetchProfile = (token, callback) => async dispatch => {
-  console.log("in fetchProfile");
+  console.log("in fetchProfile token", token);
   try {
-    const request = axios.get(
+    const request = await axios.get(
       `${SERVER_ADDRESS}/users/43`,
-      { "headers": { "Content-Type": "application/json", "Authorization": token } }
+      {
+        "headers":
+        {
+          "Content-Type": "application/json",
+          "Authorization": token
+        }
+      }
     )
-    console.log("in fetchProfile", request.data)
     dispatch({
       type: FETCH_PROFILE,
       payload: request.data.data.attributes

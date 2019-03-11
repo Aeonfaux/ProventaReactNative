@@ -11,7 +11,6 @@ class SplashPage extends Component {
       const { navigation } = this.props;
       const token = await AsyncStorage.getItem('token');
       if (token !== null) {
-        console.log('HomePage', token);
         setTimeout(() => {
           this.props.updateStatus(token).then(() => {
             const { status } = this.props;

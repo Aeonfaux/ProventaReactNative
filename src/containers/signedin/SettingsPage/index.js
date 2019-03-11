@@ -82,7 +82,7 @@ class SettingsPage extends Component {
           <ListItem
             onPress={() => {
               if (name !== "LOG OUT") {
-                navigation.navigate(route, { meetingId: 35, content: name, status: "loggedin" })
+                navigation.navigate(route, { content: name, status: "loggedin" })
               }
               else if (name === "LOG OUT") {
                 this.clearToken().then(() => {

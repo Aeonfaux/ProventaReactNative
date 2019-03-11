@@ -176,7 +176,6 @@ class InformationDetailsPage extends Component {
           settings={() => {
             if (content !== "PERSONAL SCHEDULE") {
               navigation.navigate("SettingsPage", {
-                meetingId: 35,
                 content: "settings",
                 previousRoute: "MeetingLoginPage"
               });
