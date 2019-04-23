@@ -20,58 +20,52 @@ import PageStyle from "./styles";
 import { DrawerActions } from "react-navigation";
 import { connect } from "react-redux";
 import { updateAuth, login, fetchProfile, fetchMeetings } from "../../../actions";
-// import { GoogleSignin, statusCodes } from "react-native-google-signin";
+import { Google } from 'expo';
+// import Expo from 'expo';
+
 
 class LoginPage extends Component {
 
   state = {
     isFetching: null,
     authError: '',
+    user: null
   }
-  componentDidMount() {
-    // GoogleSignin.configure({
-    //   iosClientId:
-    //     "631979342854-a1s3b73lpv13rla3aq1uh07e6hntr9k3.apps.googleusercontent.com", //only for ios
-    //   webClientId:
-    //     "631979342854-v68oaojlkgttth4j9bqp103ea1po8egb.apps.googleusercontent.com" //only for android
-    // });
-    // this.getCurrentUser();
+  async componentDidMount() {
 
   }
 
-  getCurrentUser = async () => {
-    try {
-      const userInfo = await GoogleSignin.signInSilently();
-
-    } catch (error) {
-      console.log(error);
-    }
+  syncUserWithStateAsync = async () => {
+    const user = await Google.signInSilentlyAsync();
+    this.setState({ user });
   };
 
-  signIn = async () => {
-    const { navigation } = this.props;
+  loginWithGoogle = async () => {
+
     try {
-      await GoogleSignin.hasPlayServices({
-        showPlayServicesUpdateDialog: true
+      const result = await Google.logInAsync({
+        iosClientId: "6966997513-s5mroeevftu0i8l0a8rmm35c5cv9v12p.apps.googleusercontent.com",
+        // iosStandaloneAppClientId: `6966997513-bhctt6ajg1b5l2gakrgq7527vs0ikvgm.apps.googleusercontent.com`,
+        scopes: ['profile', 'email'],
+        behavior: 'web'
       });
-      const userInfo = await GoogleSignin.signIn();
-      console.log("User Info --> ", userInfo);
-      if (userInfo) {
-        navigation.navigate("MeetingPage", { meetingId: 35, status: "loggedin" });
-      }
-    } catch (error) {
-      console.log("Message", error.message);
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        console.log("User Cancelled the Login Flow");
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        console.log("Signing In");
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        console.log("Play Services Not Available or Outdated");
+
+      console.log(result);
+      alert(JSON.stringify(result.user))
+
+      if (result.type === 'success') {
+        return result.accessToken;
       } else {
-        console.log("Some Other Error Happened");
+        return { cancelled: true };
       }
+    } catch (e) {
+      return { error: true };
     }
-  };
+  }
+
+  cacheAuthAsync(authState) {
+    return AsyncStorage.setItem(StorageKey, JSON.stringify(authState));
+  }
 
   renderSocialLinks() {
     return (
@@ -91,7 +85,7 @@ class LoginPage extends Component {
           icon={require("../../../assets/google.png")}
           // onPress={this.signIn.bind(this)}
           onPress={() => {
-            console.log("hello");
+            this.loginWithGoogle();
           }}
         />
       </View>
@@ -150,6 +144,7 @@ class LoginPage extends Component {
       }
     });
   }
+
 
   render() {
     const { navigation, meetings, status, user, token } = this.props;

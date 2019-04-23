@@ -26,15 +26,19 @@
     "ios": {
       "bundleIdentifier": "com.proventa.strategymeetings",
       "config": {
-        "googleMapsApiKey": "AIzaSyCuxHfe2A0A_VIAKcqMKNXYN0zR5Fz5JIY"
+        "googleMapsApiKey": "AIzaSyCnPdwMIbU02RuA6mzbMjvZTNHRuS8v36w",
+        "googleSignIn": {
+          "reservedClientId": "com.googleusercontent.apps.6966997513-s5mroeevftu0i8l0a8rmm35c5cv9v12p"
+        }
       },
       "supportsTablet": true
     },
     "android": {
       "package": "com.proventa.strategymeetings",
+      "googleServicesFile": "./google-services.json",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyD9DMG6CijMOxE6oDY9P5EgioqplvQuO8I"
+          "apiKey": "AIzaSyB1oyEuC9lZQoYhNIHPDdHn4yTsXHDVEIA"
         }
       }
     }
